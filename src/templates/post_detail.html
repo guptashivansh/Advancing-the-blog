@@ -1,6 +1,6 @@
 {% extends "base.html" %}	
 {% load urlify %}
-
+{% load crispy_forms_tags %}
 {% block head_title %}{{ instance.title }} | {{ block.super }}{% endblock head_title %}
 
 {% block content %}
@@ -37,21 +37,43 @@ Share on Linkedin
 <div class='row'>
 <div class='col-sm-12 '>
 	<div class='post_detail_item'>{{instance.get_markdown }}</div>
+
 	</br>
 	<hr/>
 
 <div>
 	<p class='lead'>Comments</p>
+	<form method="POST" action="."> {% csrf_token %}
+		{{ comment_form|crispy  }}
+		<input type="submit" name="post comment" class='btn btn-default'>
+	</form>
+	<hr/> 
 	{% for comment in comments %}
-	{{ comment.content_object }}
-		<div class=''>
-			{{ comment.content }}
-			<br>
-			<small>via {{ comment.user }} | {{ comment.timestamp|timesince }} ago</small>
-			<hr/>
+
+	<blockquote class="blockquote">
+  		<p class="mb-0">{{ comment.content }}</p>
+  		<footer class="blockquote-footer">{{ comment.user }} | {{ comment.timestamp|timesince }} ago|
+  			{% if comment.children.count > 0 %}{{ comment.children.count }} Comment{% if comment.children.count > 1 %}s{% endif %} {% endif %}<a class='comment-reply-btn' href="#">Reply</a> | <a class='' href="{{ comment.get_absolute_url }}">Thread</a></footer>
+  		<div class='comment-reply'>	
+	  		{% for child_comment in comment.children %}
+		  		<blockquote class="blockquote">
+		  		<p class="mb-0">{{ comment.content }}</p>
+		  		<footer class="blockquote-footer">{{ comment.user }} | {{ comment.timestamp|timesince }} ago</footer>
+		  		</blockquote>
+		  	{% endfor %}
+
+  			<form method="POST" action="."> {% csrf_token %}
+				{{ comment_form|crispy  }}
+				<input type='hidden' name='parent_id' value='{{ comment.id }}'>
+				<input type="submit" name="post comment" value="Reply" class='btn btn-default'>
+			</form>
 		</div>
-		
+
+	</blockquote>
+	<hr/>
 	{% endfor %}
+
+
 </div>
 <!-- 
 <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
