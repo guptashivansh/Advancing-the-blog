@@ -9,8 +9,11 @@
 	<img src='{{ instance.image.url}}' class='img-responsive' />
 	{% endif %}
 <h1>{{ title }}<small>{% if instance.draft %}<span style='color: red;'>Draft </span>{% endif %}{{ instance.publish }}</small></h1> 
-{% if instance %}
-<p>Author: {{ instance.user }}</p>
+
+<p>Read time: {{ instance.read_time }} Minute{% if instance.read_time > 1 %}s{% endif %} </p>
+
+{% if instance.user.get_full_name %}
+<p>Author: {{ instance.user.get_full_name }}</p>
 {% endif %}
 <div class="fb-like" data-href="{{ request.build_absolute_uri}}" data-layout="standard" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
 <hr/>
@@ -57,8 +60,8 @@ Share on Linkedin
   		<div class='comment-reply'>	
 	  		{% for child_comment in comment.children %}
 		  		<blockquote class="blockquote">
-		  		<p class="mb-0">{{ comment.content }}</p>
-		  		<footer class="blockquote-footer">{{ comment.user }} | {{ comment.timestamp|timesince }} ago</footer>
+		  		<p class="mb-0">{{ child_comment.content }}</p>
+		  		<footer class="blockquote-footer">{{ child_comment.user }} | {{ child_comment.timestamp|timesince }} ago</footer>
 		  		</blockquote>
 		  	{% endfor %}
 
@@ -74,10 +77,9 @@ Share on Linkedin
 	{% endfor %}
 
 
-</div>
-<!-- 
+<!-- </div> 
 <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
- --></div>
+</div> -->
 </div>
 </div>
 

@@ -12,6 +12,7 @@ from comments.forms import CommentForm
 
 from .forms import PostForm
 from .models import Post
+
 # Create your views here.
 
 def posts_create(request):
@@ -40,11 +41,13 @@ def posts_detail(request, slug = None):
 			raise Http404
 	share_string = quote_plus(instance.content)
 
+	#print(get_read_time(instance.content))
+	#print(get_read_time(instance.get_markdown()))
 	initial_data = {
 			"content_type": instance.get_content_type,
 			"object_id": instance.id
 	}
-
+	
 	form = CommentForm(request.POST or None, initial = initial_data )
 	if form.is_valid():
 		c_type = form.cleaned_data.get("content_type")
