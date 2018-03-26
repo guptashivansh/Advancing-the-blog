@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from .forms import CommentForm
 from .models import Comment
 
-@login_required#(login_url='/login/')
+@login_required #(login_url='/login/')
 def comment_delete(request, id):
 	#obj = get_object_or_404(Comment, id=id)
 	try:
